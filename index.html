@@ -395,6 +395,59 @@
             background: linear-gradient(135deg, var(--bg-darker) 0%, var(--gray-dark) 100%);
         }
 
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+        }
+
+        .contact-card {
+            background-color: var(--gray-dark);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(229, 9, 20, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-red);
+            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.2);
+        }
+
+        .contact-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .contact-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-white);
+        }
+
+        .contact-card p {
+            color: var(--text-gray);
+            margin: 0;
+        }
+
+        .contact-card a {
+            color: var(--accent-red);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .contact-card a:hover {
+            color: var(--text-white);
+            text-decoration: underline;
+        }
+
         .contact-form {
             max-width: 600px;
             margin: 3rem auto 0;
@@ -571,6 +624,41 @@
             scroll-behavior: smooth;
         }
 
+        /* Botón Flotante WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            text-decoration: none;
+            animation: pulse 2s infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+            }
+            50% {
+                box-shadow: 0 10px 50px rgba(37, 211, 102, 0.5);
+            }
+        }
+
         /* Responsive */
         @media (max-width: 767px) {
             header {
@@ -694,7 +782,9 @@
                     </div>
                 </div>
             </div>
-            <div class="about-image">🎯</div>
+            <div class="about-image">
+                <img src="IMG_0183.jpeg" alt="Joesef Diaz - AutomationAI" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
+            </div>
         </div>
     </section>
 
@@ -703,8 +793,28 @@
         <h2 class="section-title">Contáctanos</h2>
         <p class="section-subtitle">¿Listo para automatizar tu negocio? Déjanos un mensaje y nos pondremos en contacto pronto.</p>
         
-        <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+        <div class="contact-info">
+            <div class="contact-card">
+                <div class="contact-icon">📧</div>
+                <h4>Email</h4>
+                <p><a href="mailto:joesef.diaz@gmail.com">joesef.diaz@gmail.com</a></p>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon">💬</div>
+                <h4>WhatsApp</h4>
+                <p><a href="https://wa.me/51993263287" target="_blank">+51 993 263 287</a></p>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon">⏱️</div>
+                <h4>Disponibilidad</h4>
+                <p>Lunes a Viernes, 9:00 - 18:00 (Zona Horaria Perú)</p>
+            </div>
+        </div>
+        
+        <form class="contact-form" id="contactForm" action="https://formsubmit.co/joesef.diaz@gmail.com" method="POST" onsubmit="handleSubmit(event)">
             <div class="form-message" id="formMessage"></div>
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_next" value="https://yourdomain.com/thanks.html">
             
             <div class="form-group">
                 <label for="name">Nombre *</label>
@@ -769,6 +879,14 @@
         </div>
     </footer>
 
+    <!-- Botón Flotante WhatsApp -->
+    <a href="https://wa.me/51993263287?text=Hola,%20me%20gustaría%20conocer%20más%20sobre%20los%20servicios%20de%20automatización%20de%20AutomationAI" 
+       target="_blank" 
+       class="whatsapp-float" 
+       title="Contactar por WhatsApp">
+        💬
+    </a>
+
     <script>
         // Toggle Menu
         function toggleMenu() {
@@ -793,8 +911,6 @@
 
         // Manejo del formulario
         function handleSubmit(event) {
-            event.preventDefault();
-            
             const form = event.target;
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
@@ -803,35 +919,25 @@
             
             // Validación básica
             if (!name || !email || !message) {
+                event.preventDefault();
                 formMessage.textContent = 'Por favor completa todos los campos requeridos.';
                 formMessage.classList.add('error', 'show');
-                return;
+                return false;
             }
             
             // Validar email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
+                event.preventDefault();
                 formMessage.textContent = 'Por favor ingresa un correo electrónico válido.';
                 formMessage.classList.add('error', 'show');
-                return;
+                return false;
             }
             
-            // Simular envío
+            // Si la validación es correcta, permite que FormSubmit envíe el formulario
             formMessage.classList.remove('error', 'show');
-            formMessage.textContent = 'Enviando...';
+            formMessage.textContent = 'Enviando tu mensaje...';
             formMessage.classList.add('show');
-            
-            setTimeout(() => {
-                formMessage.textContent = '¡Gracias! Tu mensaje ha sido enviado exitosamente. Nos pondremos en contacto pronto.';
-                formMessage.classList.remove('error');
-                formMessage.classList.add('success', 'show');
-                form.reset();
-                
-                // Limpiar mensaje después de 5 segundos
-                setTimeout(() => {
-                    formMessage.classList.remove('show');
-                }, 5000);
-            }, 1500);
         }
 
         // Efecto scroll para header
