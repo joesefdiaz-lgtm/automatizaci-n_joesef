@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutomationAI - Agentes de IA para tu Negocio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0e27;
+            --bg-darker: #05070f;
+            --gray-dark: #1a1f3a;
+            --gray-light: #2d3748;
+            --accent-red: #E50914;
+            --accent-red-hover: #c40812;
+            --text-white: #ffffff;
+            --text-gray: #b0bec5;
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header y Navegación */
+        header {
+            background-color: rgba(5, 7, 15, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(229, 9, 20, 0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-white) 0%, var(--accent-red) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .nav-menu {
+            display: none;
+            list-style: none;
+            gap: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-darker);
+            flex-direction: column;
+            border-top: 1px solid rgba(229, 9, 20, 0.1);
+        }
+
+        .nav-menu.active {
+            display: flex;
+        }
+
+        .nav-menu li {
+            border-bottom: 1px solid rgba(229, 9, 20, 0.1);
+        }
+
+        .nav-menu a {
+            display: block;
+            color: var(--text-white);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            background-color: rgba(229, 9, 20, 0.1);
+            color: var(--accent-red);
+            padding-left: 2.5rem;
+        }
+
+        .toggle-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .toggle-menu span {
+            width: 25px;
+            height: 2px;
+            background-color: var(--text-white);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        @media (min-width: 768px) {
+            .nav-menu {
+                display: flex !important;
+                position: static;
+                background-color: transparent;
+                flex-direction: row;
+                border: none;
+                gap: 2rem;
+            }
+
+            .nav-menu li {
+                border-bottom: none;
+            }
+
+            .nav-menu a {
+                padding: 0;
+            }
+
+            .nav-menu a:hover {
+                padding-left: 0;
+                border-bottom: 2px solid var(--accent-red);
+            }
+
+            .toggle-menu {
+                display: none;
+            }
+        }
+
+        /* Sección Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--gray-dark) 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(229, 9, 20, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2rem, 8vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            letter-spacing: -2px;
+        }
+
+        .hero-content .accent {
+            color: var(--accent-red);
+        }
+
+        .hero-content p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--text-gray);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-red);
+            color: var(--text-white);
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-red-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-white);
+            border: 2px solid var(--accent-red);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--accent-red);
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Sección Principal */
+        section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Servicios */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background-color: var(--gray-dark);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            border: 1px solid rgba(229, 9, 20, 0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-red), transparent);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-red);
+            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.2);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-white);
+        }
+
+        .service-card p {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        /* Sección About */
+        .about {
+            background-color: var(--gray-dark);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-red);
+        }
+
+        .about-text p {
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+            line-height: 1.9;
+        }
+
+        .about-features {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .feature-check {
+            color: var(--accent-red);
+            font-weight: 700;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            color: var(--text-gray);
+        }
+
+        @media (min-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .about-image {
+                height: 400px;
+                background: linear-gradient(135deg, var(--accent-red), rgba(229, 9, 20, 0.3));
+                border-radius: var(--radius-lg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 4rem;
+                box-shadow: 0 20px 60px rgba(229, 9, 20, 0.15);
+            }
+        }
+
+        /* Formulario de Contacto */
+        .contact {
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--gray-dark) 100%);
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 3rem auto 0;
+            background-color: var(--gray-dark);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(229, 9, 20, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--bg-dark);
+            border: 1px solid rgba(229, 9, 20, 0.2);
+            border-radius: var(--radius);
+            color: var(--text-white);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-red);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 1.2rem;
+            background-color: var(--accent-red);
+            color: var(--text-white);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
+        }
+
+        .form-submit:hover {
+            background-color: var(--accent-red-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.4);
+        }
+
+        .form-message {
+            text-align: center;
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .form-message.success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .form-message.error {
+            background-color: rgba(229, 9, 20, 0.2);
+            color: var(--accent-red);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+        }
+
+        .form-message.show {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-darker);
+            border-top: 1px solid rgba(229, 9, 20, 0.1);
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-white);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-red);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(229, 9, 20, 0.1);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: var(--gray-dark);
+            border: 1px solid rgba(229, 9, 20, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent-red);
+            border-color: var(--accent-red);
+            transform: translateY(-3px);
+        }
+
+        /* Scroll Smooth */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Responsive */
+        @media (max-width: 767px) {
+            header {
+                padding: 1rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            section {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .hero-content h1 {
+                margin-bottom: 1rem;
+            }
+
+            .service-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">AutomationAI</div>
+            <button class="toggle-menu" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#hero">Inicio</a></li>
+                <li><a href="#services">Servicios</a></li>
+                <li><a href="#about">Nosotros</a></li>
+                <li><a href="#contact">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Automatiza tu Negocio con <span class="accent">Agentes de IA</span></h1>
+            <p>Soluciones inteligentes que optimizan procesos, reducen costos y escalan tu empresa al siguiente nivel</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollTo('contact')">Comenzar Ahora</button>
+                <button class="btn btn-secondary" onclick="scrollTo('services')">Conocer Servicios</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section id="services">
+        <h2 class="section-title">Nuestros Servicios</h2>
+        <p class="section-subtitle">Soluciones de IA diseñadas para transformar tu negocio</p>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🤖</div>
+                <h3>Agentes Autónomos</h3>
+                <p>Crea agentes de IA que trabajan 24/7 automatizando tareas complejas y tomando decisiones inteligentes para tu negocio.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">⚙️</div>
+                <h3>Automatización de Procesos</h3>
+                <p>Optimiza flujos de trabajo, reduce errores manuales y acelera operaciones con sistemas inteligentes de automatización.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📊</div>
+                <h3>Análisis Inteligente</h3>
+                <p>Convierte datos en insights accionables. Nuestros agentes analizan información en tiempo real para decisiones más rápidas.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">💬</div>
+                <h3>Chatbots Conversacionales</h3>
+                <p>Chatbots inteligentes que atienden clientes 24/7, responden consultas y generan ventas automáticamente.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🔌</div>
+                <h3>Integración Personalizada</h3>
+                <p>Conectamos agentes de IA con tus sistemas existentes: CRM, bases de datos, APIs y plataformas especializadas.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📈</div>
+                <h3>Consultoría IA</h3>
+                <p>Asesoramiento experto para identificar oportunidades de automatización y maximizar el ROI de proyectos de IA.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <h2 class="section-title">Sobre AutomationAI</h2>
+        
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Transformamos Negocios con Inteligencia Artificial</h3>
+                <p>En AutomationAI, creemos que la IA no es un lujo, sino una necesidad competitiva. Nos especializamos en crear soluciones de automatización inteligentes que permiten a empresas de todos los tamaños optimizar operaciones y acelerar crecimiento.</p>
+                <p>Nuestro equipo de expertos en IA, machine learning y automatización ha ayudado a cientos de empresas a transformar sus procesos y aumentar productividad hasta 300%.</p>
+                
+                <div class="about-features">
+                    <div class="feature-item">
+                        <div class="feature-check">✓</div>
+                        <div class="feature-text">Soluciones personalizadas según tus necesidades específicas</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-check">✓</div>
+                        <div class="feature-text">Implementación rápida con soporte técnico especializado</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-check">✓</div>
+                        <div class="feature-text">Tecnología de punta: GPT-4, Claude, LLaMA y más</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-check">✓</div>
+                        <div class="feature-text">ROI comprobado con resultados medibles</div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-image">🎯</div>
+        </div>
+    </section>
+
+    <!-- Formulario de Contacto -->
+    <section class="contact" id="contact">
+        <h2 class="section-title">Contáctanos</h2>
+        <p class="section-subtitle">¿Listo para automatizar tu negocio? Déjanos un mensaje y nos pondremos en contacto pronto.</p>
+        
+        <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-message" id="formMessage"></div>
+            
+            <div class="form-group">
+                <label for="name">Nombre *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Correo Electrónico *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="company">Empresa</label>
+                <input type="text" id="company" name="company">
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Mensaje *</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            
+            <button type="submit" class="form-submit">Enviar Mensaje</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>AutomationAI</h4>
+                    <p style="color: var(--text-gray); margin-bottom: 1rem;">Soluciones inteligentes para empresas modernas</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="#services">Agentes Autónomos</a></li>
+                        <li><a href="#services">Chatbots IA</a></li>
+                        <li><a href="#services">Análisis Inteligente</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Compañía</h4>
+                    <ul>
+                        <li><a href="#about">Sobre Nosotros</a></li>
+                        <li><a href="#contact">Contacto</a></li>
+                        <li><a href="#">Privacidad</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" title="LinkedIn">in</a>
+                <a href="#" title="Twitter">𝕏</a>
+                <a href="#" title="GitHub">⚙</a>
+                <a href="#" title="Email">✉</a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 AutomationAI. Todos los derechos reservados. Diseño moderno y profesional.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle Menu
+        function toggleMenu() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+
+        // Cerrar menú al hacer click en un enlace
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navMenu').classList.remove('active');
+            });
+        });
+
+        // Scroll suave
+        function scrollTo(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Manejo del formulario
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            const formMessage = document.getElementById('formMessage');
+            
+            // Validación básica
+            if (!name || !email || !message) {
+                formMessage.textContent = 'Por favor completa todos los campos requeridos.';
+                formMessage.classList.add('error', 'show');
+                return;
+            }
+            
+            // Validar email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                formMessage.textContent = 'Por favor ingresa un correo electrónico válido.';
+                formMessage.classList.add('error', 'show');
+                return;
+            }
+            
+            // Simular envío
+            formMessage.classList.remove('error', 'show');
+            formMessage.textContent = 'Enviando...';
+            formMessage.classList.add('show');
+            
+            setTimeout(() => {
+                formMessage.textContent = '¡Gracias! Tu mensaje ha sido enviado exitosamente. Nos pondremos en contacto pronto.';
+                formMessage.classList.remove('error');
+                formMessage.classList.add('success', 'show');
+                form.reset();
+                
+                // Limpiar mensaje después de 5 segundos
+                setTimeout(() => {
+                    formMessage.classList.remove('show');
+                }, 5000);
+            }, 1500);
+        }
+
+        // Efecto scroll para header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.borderBottomColor = 'rgba(229, 9, 20, 0.3)';
+            } else {
+                header.style.borderBottomColor = 'rgba(229, 9, 20, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html>
